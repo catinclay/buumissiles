@@ -62,6 +62,6 @@ app.get('/index.js', function(req, res){
 //   res.sendfile('shapes/SimpleSquareParticle.js');
 // });
 
-http.listen(3000, function(){
+http.listen(80, function(){
   console.log('listening on *:3000');
 });
