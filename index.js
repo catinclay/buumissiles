@@ -25,8 +25,9 @@ function init(){
 	socket.on('getSocketId', function(data){
 		socketId = data;
 		// console.log(socketId);
+		socket.emit('update_username',{socketId: socketId, username: userName});
 	});
-	socket.emit('update_username',{socketId: socketId, username: userName});
+	
 	addListeners();
 
 

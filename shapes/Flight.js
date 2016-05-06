@@ -47,7 +47,7 @@ Flight.prototype.drawToContext = function(theContext, hp) {
 	    context.font = "15px Comic Sans MS";
 		context.fillStyle = "red";
 		context.textAlign = "center";
-		context.fillText(this.username, this.x , -this.image.width*0.75);
+		context.fillText(this.username, this.x , this.y-this.image.width*0.75);
     // }
 
 }

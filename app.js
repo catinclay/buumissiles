@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 var data = {};
 var data 
 app.use('/shapes', express.static('shapes'));
-var flightSpeed = 5;
+var flightSpeed = 1;
 
 setInterval(onTimerTick, 1000/30);
 io.on('connection', function(socket){
@@ -24,9 +24,9 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('update_username', function(msg){
-		// if(data[msg.socketId]!= undefined){
+		if(data[msg.socketId]!= undefined){
 			data[msg.socketId].username = msg.username;
-		// }
+		}
 	});
   
   	socket.on('flight_turn', function(msg){
