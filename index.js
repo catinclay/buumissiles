@@ -18,14 +18,17 @@ var flights = [];
 var missiles = [];
 
 function init(){
-	var userName = prompt("What's your name?", "Guest");
+	var username = prompt("What's your name?", "Guest");
+	if(username == undefined){
+		return;
+	}
 	theCanvas.style.display = "block";
 	myFlight = new Flight(0, 0, myFlightImage, 0, 0, "");
 	// mySSP = new SimpleSquareParticle(squareX, squareY);
 	socket.on('getSocketId', function(data){
 		socketId = data;
 		// console.log(socketId);
-		socket.emit('update_username',{socketId: socketId, username: userName});
+		socket.emit('update_username',{socketId: socketId, username: username});
 	});
 	
 	addListeners();

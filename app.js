@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 var data = {};
 var data 
 app.use('/shapes', express.static('shapes'));
-var flightSpeed = 1;
+var flightSpeed = 5;
 
 setInterval(onTimerTick, 1000/30);
 io.on('connection', function(socket){
@@ -15,7 +15,7 @@ io.on('connection', function(socket){
 		console.log("new user: "+socketId);
 	    io.sockets.connected[socketId].emit('getSocketId', socketId);
 	    console.log(socketId);
-	    data[socketId] = {posX:0, posY:0, angle:0};
+	    data[socketId] = {posX:300, posY:207, angle:0};
 	}
 
 	socket.on('disconnect', function(){
@@ -43,6 +43,8 @@ function caculate(){
 		if(data[k].posX != undefined && data[k].posY != undefined){
 			data[k].posX -= flightSpeed * Math.cos(data[k].angle+Math.PI/2);
 			data[k].posY += flightSpeed * Math.sin(data[k].angle+Math.PI/2);
+			data[k].posX = Math.max(0, Math.min(600, data[k].posX));
+			data[k].posY = Math.max(0, Math.min(414, data[k].posY));
 		}
 	}
 }
