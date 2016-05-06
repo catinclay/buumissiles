@@ -39,7 +39,7 @@ function init(){
 	socket.on('timeTick', function(data){
 		localData = JSON.parse(data);
 		// console.log(data);
-		if(localData.users[socketId].posX != undefined && localData.users[socketId].posY != undefined){
+		if(localData.users[socketId] != undefined ){
 			currentPos = {x: localData.users[socketId].posX, y: localData.users[socketId].posY};
 		}
 	});
@@ -83,14 +83,25 @@ function drawFlights() {
 
 function drawMissiles() {
 	missiles = [];
-	for(var i = 0; i < localData.missiles.length; ++i) {
+	var i;
+	for(i = 0; i < localData.missiles.length; ++i) {
 		var missileData = localData.missiles[i];
-		missiles.push(new Missile(missileData.posX - currentPos.x
+		if(i < missiles.length){
+			missiles[i].set(missileData.posX - currentPos.x
+								, missileData.posY - currentPos.y
+								, missileData.angle
+								, missileImage, missileSignImage);
+		}else{
+			missiles.push(new Missile(missileData.posX - currentPos.x
 								, missileData.posY - currentPos.y
 								, missileData.angle
 								, missileImage, missileSignImage));
+		}
 	}
-	for(var i = 0; i < missiles.length; ++i){
+	if(i < missiles.length){
+		missiles.splice(i, missiles.length - localData.missiles.length);
+	}
+	for(i = 0; i < missiles.length; ++i){
 		missiles[i].drawToContext(context);
 	}
 	

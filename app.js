@@ -11,6 +11,7 @@ var flightSpeed = 5;
 var missileSpeed = 7;
 var missileRotateRate = 0.06;
 var missileCount = 20;
+var missileRadius = 200;
 setInterval(onTimerTick, 1000/30);
 io.on('connection', function(socket){
 	var socketId = socket.id;
@@ -42,7 +43,7 @@ io.on('connection', function(socket){
   	});
 });
 
-function caculate(){
+function calculate(){
 	for(var k in data.users){
 		var user = data.users[k];
 		if(user.posX != undefined && user.posY != undefined){
@@ -52,6 +53,7 @@ function caculate(){
 			user.posY = Math.max(0, Math.min(414, user.posY));
 		}
 	}
+	loopEachMissile:
 	for(var i = 0; i < data.missiles.length; ++i){
 		var minDistance;
 		var nk;
@@ -62,21 +64,27 @@ function caculate(){
 				var dx = missile.posX - user.posX;
 				var dy = missile.posY - user.posY;
 				var dis = dx*dx+dy*dy;
+				if(dis < missileRadius){
+					missile.speed = 0;
+					break loopEachMissile;
+				}
 				if(minDistance == undefined || dis < minDistance){
 					minDistance = dis;
 					nk = k;
 				}
 			}
 		}
+
 		if(data.users[nk] != undefined){
 			missile.angle = rotateTo(missile.posX, missile.posY
 									, data.users[nk].posX, data.users[nk].posY
 									, missile.angle, missileRotateRate);
 		}
-		missile.posX -=  Math.cos(missile.angle+Math.PI/2)*missileSpeed;
-		missile.posY +=  Math.sin(missile.angle+Math.PI/2)*missileSpeed;
+		missile.posX -=  Math.cos(missile.angle+Math.PI/2)*missile.speed;
+		missile.posY +=  Math.sin(missile.angle+Math.PI/2)*missile.speed;
 	}
 }
+
 
 function rotateTo(fx, fy, tx, ty, cd, rr){
 	var td = Math.atan2(tx - fx, ty - fy);
@@ -113,12 +121,12 @@ function onTimerTick(){
 		missilesCountDown -= 1000/30;
 		if(missilesCountDown < 0){
 			missilesCountDown = 5000;
-			data.missiles.push({posX : -100, posY : -100, angle : 0});
+			data.missiles.push({posX : -100, posY : -100, angle : 0, speed : missileSpeed});
 			missileCount--;
 		}
 		// console.log(data);
 	}
-	caculate();
+	calculate();
 	var jsonS = JSON.stringify(data);
 	// console.log(jsonS);
 	io.sockets.emit('timeTick', jsonS);
