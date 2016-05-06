@@ -6,6 +6,8 @@ context.translate(theCanvasWidth/2,theCanvasHeight/2);
 var flightImage = new Image();
 var myFlightImage = new Image();
 var backgroundImage = new Image();
+var missileImage = new Image();
+var missileSignImage = new Image();
 
 var socket = io();
 var socketId;
@@ -37,8 +39,8 @@ function init(){
 	socket.on('timeTick', function(data){
 		localData = JSON.parse(data);
 		// console.log(data);
-		if(localData[socketId].posX != undefined && localData[socketId].posY != undefined){
-			currentPos = {x: localData[socketId].posX, y: localData[socketId].posY};
+		if(localData.users[socketId].posX != undefined && localData.users[socketId].posY != undefined){
+			currentPos = {x: localData.users[socketId].posX, y: localData.users[socketId].posY};
 		}
 	});
 	timer = setInterval(onTimerTick, 1000/30);
@@ -48,6 +50,7 @@ function init(){
 
 function inputDownListener(touchX, touchY){
 	// socket.emit('pos',{socketId: socketId, x:touchX, y:touchY});
+	console.log(localData);
 }
 
 function inputMoveListener(touchX, touchY){
@@ -62,14 +65,33 @@ function inputUpListener(touchX, touchY){
 
 function drawFlights() {
 	flights = [];
-	for(var k in localData) {
+	for(var k in localData.users) {
 		if(k!= socketId)
-		flights.push(new Flight(localData[k].posX- currentPos.x
-			, localData[k].posY- currentPos.y
-			, flightImage, localData[k].angle, 0, localData[k].username));
+		{
+			var user = localData.users[k];
+			flights.push(new Flight(user.posX- currentPos.x
+			, user.posY- currentPos.y
+			, flightImage, user.angle, 0, user.username));
+		}
 	}
+
 	for(var i = 0; i < flights.length; ++i){
 		flights[i].drawToContext(context, 0);
+	}
+	
+}
+
+function drawMissiles() {
+	missiles = [];
+	for(var i = 0; i < localData.missiles.length; ++i) {
+		var missileData = localData.missiles[i];
+		missiles.push(new Missile(missileData.posX - currentPos.x
+								, missileData.posY - currentPos.y
+								, missileData.angle
+								, missileImage, missileSignImage));
+	}
+	for(var i = 0; i < missiles.length; ++i){
+		missiles[i].drawToContext(context);
 	}
 	
 }
@@ -98,6 +120,8 @@ function drawScreen() {
 }
 
 
+
+
 function onTimerTick(){
 	drawScreen();
 	// SSPS = [];
@@ -106,6 +130,7 @@ function onTimerTick(){
 	// }
 	drawFlights();
 	drawFlight();
+	drawMissiles();
 	socket.emit('flight_turn',{socketId: socketId, angle: myFlight.getDegree()});
 }
 
@@ -179,8 +204,8 @@ function loadImage(image, src) {
 
 
 var loadPromises = [
-	// loadImage(missileImage, "shapes/img/missileIcon.png"),
-	// loadImage(missileSignImage, "shapes/img/missile-sign.png"),
+	loadImage(missileImage, "shapes/img/missileIcon.png"),
+	loadImage(missileSignImage, "shapes/img/missile-sign.png"),
 	loadImage(flightImage, "shapes/img/flightIcon.png"),
 	loadImage(myFlightImage, "shapes/img/myFlightIcon.png"),
 	loadImage(backgroundImage, "shapes/img/background.png"),
@@ -190,5 +215,4 @@ var loadPromises = [
 
 
 
-
-init();
+Promise.all(loadPromises).then(init());
