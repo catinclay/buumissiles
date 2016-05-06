@@ -24,9 +24,9 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('update_username', function(msg){
-		if(data[msg.socketId]!= undefined){
+		// if(data[msg.socketId]!= undefined){
 			data[msg.socketId].username = msg.username;
-		}
+		// }
 	});
   
   	socket.on('flight_turn', function(msg){

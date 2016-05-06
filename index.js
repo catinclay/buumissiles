@@ -71,7 +71,7 @@ function drawFlights() {
 }
 
 function drawFlight() {
-	console.log(mousePos);
+	// console.log(mousePos);
 	myFlight.rotateToward(mousePos.x, mousePos.y);
 	// myFlight.x = currentPos.x;
 	// myFlight.y = currentPos.y;
