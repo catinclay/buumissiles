@@ -1,5 +1,5 @@
 // Simple class example
-function Missile(posX, posY, angle, image, signImage) {
+function Missile(posX, posY, angle, image, signImage, isExploding, explodingTimer) {
 		// this.color = "rgba(0,0,255,0.2)";
 		// this.width = 10 + Math.random()*100;
 		// this.height = 10 + Math.random()*100;
@@ -10,6 +10,8 @@ function Missile(posX, posY, angle, image, signImage) {
 		this.x = posX;
 		this.y = posY;
 		this.angle = angle;
+		this.isExploding = isExploding;
+		this.explodingTimer = explodingTimer;
 		// var offsetX = 10 + theCanvasWidth/2 + this.image.width/2;
 		// var offsetY = 10 +theCanvasHeight/2 + this.image.height/2;
 		// if(Math.random() > 0.5){
@@ -25,15 +27,18 @@ function Missile(posX, posY, angle, image, signImage) {
 		// this.rotateRate = rotateRate;
 		// this.theCanvasWidth = theCanvasWidth;
 		// this.theCanvasHeight = theCanvasHeight;
-		// this.radius = this.image.width*0.75;
+		this.radius = this.image.width*0.75;
 		// this.isExploding = false;
 		// this.a = 0.8;
 		// this.shouldDestroy = false;
 }
-Missile.prototype.set = function(posX, posY, angle) {
+
+Missile.prototype.set = function(posX, posY, angle, isExploding, explodingTimer) {
 		this.x = posX;
 		this.y = posY;
 		this.angle = angle;
+		this.isExploding = isExploding;
+		this.explodingTimer = explodingTimer;
 }
 //The function below returns a Boolean value representing whether the point with the coordinates supplied "hits" the particle.
 
@@ -98,14 +103,14 @@ Missile.prototype.set = function(posX, posY, angle) {
 // }
 
 Missile.prototype.drawToContext = function(theContext) {
-	// if(this.isExploding){
-	// 	theContext.fillStyle = "rgba(255,0,0,"+ this.a+ ")";;
-	// 	theContext.beginPath();
-	// 	theContext.arc(this.x, this.y, this.radius, 0, 2*Math.PI, false);
-	// 	theContext.closePath();
-	// 	theContext.fill();
-	// 	return;
-	// }
+	if(this.isExploding){
+		theContext.fillStyle = "rgba(255,0,0,"+this.explodingTimer/500+")";;
+		theContext.beginPath();
+		theContext.arc(this.x, this.y, this.radius, 0, 2*Math.PI, false);
+		theContext.closePath();
+		theContext.fill();
+		return;
+	}
 
 	// if(this.outOfBound()){
 	// 	// console.log(this.x +" " + this.y);

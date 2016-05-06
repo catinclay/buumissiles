@@ -53,11 +53,20 @@ function calculate(){
 			user.posY = Math.max(0, Math.min(414, user.posY));
 		}
 	}
+
+	var destoyIndices = [];
 	loopEachMissile:
 	for(var i = 0; i < data.missiles.length; ++i){
 		var minDistance;
 		var nk;
 		var missile = data.missiles[i];
+		if(missile.isExploding){ 
+			missile.explodingTimer -= 1000/30;
+			if(missile.explodingTimer <= 0){
+				destoyIndices.push(i);
+			}
+			continue; 
+		}
 		for(var k in data.users){
 			var user = data.users[k];
 			if(user.posX != undefined && user.posY != undefined){
@@ -66,6 +75,7 @@ function calculate(){
 				var dis = dx*dx+dy*dy;
 				if(dis < missileRadius){
 					missile.speed = 0;
+					missile.isExploding = true;
 					break loopEachMissile;
 				}
 				if(minDistance == undefined || dis < minDistance){
@@ -82,6 +92,10 @@ function calculate(){
 		}
 		missile.posX -=  Math.cos(missile.angle+Math.PI/2)*missile.speed;
 		missile.posY +=  Math.sin(missile.angle+Math.PI/2)*missile.speed;
+	}
+
+	for(var i = destoyIndices.length - 1; i >= 0; --i) {
+		data.missiles.splice(destoyIndices[i], 1);
 	}
 }
 
@@ -121,7 +135,9 @@ function onTimerTick(){
 		missilesCountDown -= 1000/30;
 		if(missilesCountDown < 0){
 			missilesCountDown = 5000;
-			data.missiles.push({posX : -100, posY : -100, angle : 0, speed : missileSpeed});
+			data.missiles.push({posX : -100, posY : -100
+								, angle : 0, speed : missileSpeed
+								, isExploding : false, explodingTimer : 500});
 			missileCount--;
 		}
 		// console.log(data);

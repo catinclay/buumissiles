@@ -82,7 +82,7 @@ function drawFlights() {
 }
 
 function drawMissiles() {
-	missiles = [];
+	// missiles = [];
 	var i;
 	for(i = 0; i < localData.missiles.length; ++i) {
 		var missileData = localData.missiles[i];
@@ -90,17 +90,22 @@ function drawMissiles() {
 			missiles[i].set(missileData.posX - currentPos.x
 								, missileData.posY - currentPos.y
 								, missileData.angle
-								, missileImage, missileSignImage);
+								, missileData.isExploding
+								, missileData.explodingTimer);
 		}else{
 			missiles.push(new Missile(missileData.posX - currentPos.x
 								, missileData.posY - currentPos.y
 								, missileData.angle
-								, missileImage, missileSignImage));
+								, missileImage, missileSignImage
+								, missileData.isExploding
+								, missileData.explodingTimer));
 		}
 	}
 	if(i < missiles.length){
 		missiles.splice(i, missiles.length - localData.missiles.length);
 	}
+
+
 	for(i = 0; i < missiles.length; ++i){
 		missiles[i].drawToContext(context);
 	}
