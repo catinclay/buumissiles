@@ -18,14 +18,15 @@ var flights = [];
 var missiles = [];
 
 function init(){
+	var userName = prompt("What's your name?", "Guest");
 	theCanvas.style.display = "block";
-	myFlight = new Flight(0, 0, myFlightImage, 0, 0);
+	myFlight = new Flight(0, 0, myFlightImage, 0, 0, "");
 	// mySSP = new SimpleSquareParticle(squareX, squareY);
 	socket.on('getSocketId', function(data){
 		socketId = data;
 		// console.log(socketId);
 	});
-
+	socket.emit('update_username',{socketId: socketId, username: userName});
 	addListeners();
 
 
@@ -61,7 +62,7 @@ function drawFlights() {
 		if(k!= socketId)
 		flights.push(new Flight(localData[k].posX- currentPos.x
 			, localData[k].posY- currentPos.y
-			, flightImage, localData[k].angle, 0));
+			, flightImage, localData[k].angle, 0, localData[k].username));
 	}
 	for(var i = 0; i < flights.length; ++i){
 		flights[i].drawToContext(context, 0);

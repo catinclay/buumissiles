@@ -1,6 +1,6 @@
 // Simple class example
 
-function Flight(posX, posY, image, angle, hp) {
+function Flight(posX, posY, image, angle, hp, username) {
 		this.x = posX;
 		this.y = posY;
 		this.image = image;
@@ -9,6 +9,7 @@ function Flight(posX, posY, image, angle, hp) {
 		this.targetDegree = 0;
 		this.radius = this.image.width/2*1.2;
 		this.hp = hp;
+		this.username = username;
 }
 
 //The function below returns a Boolean value representing whether the point with the coordinates supplied "hits" the particle.
@@ -42,6 +43,11 @@ Flight.prototype.drawToContext = function(theContext, hp) {
 	    theContext.lineWidth = 3;
 	    theContext.arc(0,0,this.radius,1.5 * Math.PI, (1.5 - 2 * this.hp/100) * Math.PI, true);
 	    theContext.stroke();
+
+	    context.font = "15px Comic Sans MS";
+		context.fillStyle = "red";
+		context.textAlign = "center";
+		context.fillText(this.username, 0 , -this.image.width*0.75);
     // }
 
 }

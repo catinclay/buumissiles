@@ -22,6 +22,12 @@ io.on('connection', function(socket){
 		console.log("DC: " +socketId);
 		delete data[socketId];
 	});
+
+	socket.on('update_username', function(msg){
+		if(data[msg.socketId]!= undefined){
+			data[msg.socketId].username = msg.username;
+		}
+	});
   
   	socket.on('flight_turn', function(msg){
   		// console.log(pos.socketId+": "+pos.x +", "+pos.y);
