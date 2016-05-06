@@ -101,7 +101,7 @@ function rotateTo(fx, fy, tx, ty, cd, rr){
 
 	if(cd > 2 * Math.PI){
 		cd -= 2 * Math.PI;
-	}else if(this.angle < 0){
+	}else if(cd < 0){
 		cd += 2 * Math.PI;
 	}
 	return cd;
