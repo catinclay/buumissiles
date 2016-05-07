@@ -19,8 +19,10 @@ function Flight(posX, posY, image, angle, hp, username) {
 
 //A function for drawing the particle.
 Flight.prototype.drawToContext = function(theContext, hp) {
+	this.hp = hp;
 	//theContext.rotate(this.angle*Math.PI/180);
 	// if(hp > 0){
+
 	    theContext.save();
 
 	    // move to the center of the canvas
