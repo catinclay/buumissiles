@@ -7,7 +7,7 @@ data.usersCount = 0;
 data.users = {};
 data.missiles = [];
 data.medals = [];
-var missileProduceRate = 1500;
+var missileProduceRate = 15000;
 var missilesCountDown = 0;
 app.use('/shapes', express.static('shapes'));
 var flightSpeed = 5;
@@ -23,6 +23,7 @@ setInterval(onTimerTick, 1000/30);
 var missileDamage = 20;
 var medalHealth = 5;
 var explodingDuration = 750;
+var stunTime = 300;
 io.on('connection', function(socket){
 	var socketId = socket.id;
 	console.log("new user: "+socketId);
@@ -31,7 +32,7 @@ io.on('connection', function(socket){
 	    io.sockets.connected[socketId].emit('getSocketId', socketId);
 	    console.log(socketId);
 	    data.users[socketId] = {posX:groundWidth/2, posY:groundHeight/2
-	    					, angle:0, hp : 100, isAlive : true, score : 0};
+	    					, angle:0, hp : 100, isAlive : true, score : 0, cantControl : 0};
 	    data.usersCount++;
 	}
 
@@ -50,7 +51,7 @@ io.on('connection', function(socket){
   	socket.on('flight_turn', function(msg){
   		// console.log(pos.socketId+": "+pos.x +", "+pos.y);
   		// data[pos.socketId] = {posX:pos.x, posY:pos.y};
-  		if(data.users[msg.socketId]!= undefined){
+  		if(data.users[msg.socketId]!= undefined && data.users[msg.socketId].cantControl == 0){
   			data.users[msg.socketId].angle = msg.angle;
   		}
   	});
@@ -92,6 +93,11 @@ function calculate(){
 		var user = data.users[k];
 		if(!user.isAlive){ continue; }
 		if(user.posX != undefined && user.posY != undefined){
+			if(user.cantControl >0){
+				user.cantControl -= 1000/30;
+			}else{
+				user.cantControl = 0;
+			}
 			user.posX -= flightSpeed * Math.cos(user.angle+Math.PI/2);
 			user.posY += flightSpeed * Math.sin(user.angle+Math.PI/2);
 			user.posX = Math.max(0, Math.min(groundWidth, user.posX));
@@ -107,9 +113,13 @@ function calculate(){
 			if (dis < flightRadius) {
 				//define ollision action => combine?
 				var angle1 = Math.atan2(-dx, -dy);
+				user.angle = angle1;
 				// var angle2 = Math.atan2(dx, -dy);
 				io.sockets.emit('flight_collision', 
 					{socketId : k, turnToAngle : angle1});
+				if(user.cantControl == 0){
+					user.cantControl = stunTime;
+				}
 				// io.sockets.emit('flight_collision', 
 				// 	{socketId : j, turnToAngle : angle2});
 

@@ -60,6 +60,7 @@ function init(){
 
 	socket.on('flight_collision', function(data){
 		myFlight.setDegree(data.turnToAngle);
+		// socket.emit('flight_turn',{socketId: socketId, angle: data.turnToAngle});
 	});
 	
 }
