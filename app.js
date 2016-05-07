@@ -6,6 +6,7 @@ var data = {};
 data.usersCount = 0;
 data.users = {};
 data.missiles = [];
+data.medals = [];
 var missileProduceRate = 3000;
 var missilesCountDown = 0;
 app.use('/shapes', express.static('shapes'));
@@ -13,6 +14,7 @@ var flightSpeed = 5;
 var missileSpeed = 7;
 var missileRotateRate = 0.06;
 var missileRadius = 200;
+var medalRadius = 600;
 var groundWidth = 600;
 var groundHeight = 600;
 setInterval(onTimerTick, 1000/30);
@@ -24,7 +26,7 @@ io.on('connection', function(socket){
 	    io.sockets.connected[socketId].emit('getSocketId', socketId);
 	    console.log(socketId);
 	    data.users[socketId] = {posX:groundWidth/2, posY:groundHeight/2
-	    					, angle:0, hp : 100, isAlive : true};
+	    					, angle:0, hp : 100, isAlive : true, score : 0};
 	    data.usersCount++;
 	}
 
@@ -51,12 +53,36 @@ io.on('connection', function(socket){
   	socket.on('revive_request', function(msg) {
   		data.users[msg.socketId].hp = 100;
   		data.users[msg.socketId].isAlive = true;
+  		data.users[msg.socketId].score = 0;
   		data.users[msg.socketId].posX = Math.random()*groundWidth;
   		data.users[msg.socketId].posY = Math.random()*groundHeight;
   	});
 });
 
 function calculate(){
+	if(data.medals.length < 1) {
+		data.medals.push({posX : Math.random()*groundWidth, posY : Math.random()*groundHeight});
+	}
+	var eatenMedals = [];
+	for(var i = 0; i < data.medals.length; ++i){
+		var medal = data.medals[i];
+		for(var k in data.users){
+			var user = data.users[k];
+			if(!user.isAlive){ continue; }
+			var dx = medal.posX - user.posX;
+			var dy = medal.posY - user.posY;
+			var dis = dx*dx+dy*dy;
+			if(dis < medalRadius){
+				user.hp = Math.min(user.hp+10, 100);
+				user.score += 10;
+				eatenMedals.push(i);
+			}
+		}
+	}
+	for(var i = eatenMedals.length - 1; i >= 0; --i) {
+		data.medals.splice(eatenMedals[i], 1);
+	}
+
 	for(var k in data.users){
 		var user = data.users[k];
 		if(!user.isAlive){ continue; }
@@ -95,6 +121,7 @@ function calculate(){
 					data.users[k].hp -= 20;
 					if(data.users[k].hp <= 0){
 						data.users[k].isAlive = false;
+						data.medals.push({posX : user.posX, posY : user.posY});
 					}
 					break loopEachMissile;
 				}

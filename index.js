@@ -8,6 +8,7 @@ var myFlightImage = new Image();
 var backgroundImage = new Image();
 var missileImage = new Image();
 var missileSignImage = new Image();
+var medalIcon = new Image();
 
 var socket = io();
 var socketId;
@@ -18,9 +19,11 @@ var currentPos = {};
 var myFlight;
 var flights = [];
 var missiles = [];
+var medals = [];
 var groundWidth = 600;
 var groundHeight = 600;
 var currenthp = 0;
+var currentScore = 0;
 
 function init(){
 	var username = prompt("What's your name?", "Guest");
@@ -42,9 +45,11 @@ function init(){
 	socket.on('timeTick', function(data){
 		localData = JSON.parse(data);
 		// console.log(data);
-		if(localData.users[socketId] != undefined ){
-			currentPos = {x: localData.users[socketId].posX, y: localData.users[socketId].posY};
-			currenthp = localData.users[socketId].hp;
+		var user = localData.users[socketId];
+		if( user != undefined ){
+			currentPos = {x: user.posX, y: user.posY};
+			currenthp = user.hp;
+			currentScore = user.score;
 		}
 	});
 	timer = setInterval(onTimerTick, 1000/30);
@@ -82,8 +87,8 @@ function drawFlights() {
 			// , flightImage, user.angle, user.hp, user.username));
 			var oflight = new Flight(user.posX- currentPos.x
 			, user.posY- currentPos.y
-			, flightImage, user.angle, user.hp, user.username);
-			oflight.drawToContext(context, user.hp);
+			, flightImage, user.angle, user.hp, user.username, user.score);
+			oflight.drawToContext(context, user.hp, user.score);
 		}
 	}
 
@@ -124,14 +129,34 @@ function drawMissiles() {
 	
 }
 
+function drawMedals() {
+	var i;
+	for(i = 0; i < localData.medals.length; ++i){
+		var medalData = localData.medals[i];
+		if(i < medals.length){
+			medals[i].set(medalData.posX - currentPos.x
+						, medalData.posY - currentPos.y)
+		}else {
+			medals.push(new Medal(medalData.posX - currentPos.x
+						, medalData.posY - currentPos.y
+						, medalIcon))
+		}
+	}
+	if(i < medals.length){
+		medals.splice(i, medals.length - localData.medals.length);
+	}
+	for(i = 0; i < medals.length; ++i){
+		medals[i].drawToContext(context);
+	}
+}
+
 function drawFlight() {
 	// console.log(mousePos);
 	myFlight.rotateToward(mousePos.x, mousePos.y);
 	// myFlight.x = currentPos.x;
 	// myFlight.y = currentPos.y;
-	myFlight.drawToContext(context, currenthp);
+	myFlight.drawToContext(context, currenthp, currentScore);
 }
-
 
 
 function drawScreen() {
@@ -154,13 +179,10 @@ function drawScreen() {
 
 function onTimerTick(){
 	drawScreen();
-	// SSPS = [];
-	// for(var k in localData){
-	// 	SSPS.push(new SimpleSquareParticle(localData[k].posX, localData[k].posY));
-	// }
 	drawFlights();
-	drawFlight();
 	drawMissiles();
+	drawMedals();
+	drawFlight();
 	socket.emit('flight_turn',{socketId: socketId, angle: myFlight.getDegree()});
 }
 
@@ -238,7 +260,9 @@ var loadPromises = [
 	loadImage(missileSignImage, "shapes/img/missile-sign.png"),
 	loadImage(flightImage, "shapes/img/flightIcon.png"),
 	loadImage(myFlightImage, "shapes/img/myFlightIcon.png"),
+	loadImage(medalIcon, "shapes/img/medalIcon.png"),
 	loadImage(backgroundImage, "shapes/img/background.png"),
+	
 	// loadImage(gasImage, "shapes/img/gasIcon.png"),
 	// loadImage(gasSignImage, "shapes/img/gasIcon-sign.png")
 ];
