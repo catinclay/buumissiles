@@ -43,7 +43,7 @@ Flight.prototype.drawToContext = function(theContext, hp) {
 	    theContext.beginPath();
 	    theContext.strokeStyle = "rgba(" + Math.floor(255*(80-this.hp)/100) + "," + Math.floor(255*((this.hp-20)/100)) + ",0,0.8)";
 	    theContext.lineWidth = 3;
-	    theContext.arc(0,0,this.radius,1.5 * Math.PI, (1.5 - 2 * this.hp/100) * Math.PI, true);
+	    theContext.arc(this.x,this.y,this.radius,1.5 * Math.PI, (1.5 - 2 * this.hp/100) * Math.PI, true);
 	    theContext.stroke();
 
 	    context.font = "15px Comic Sans MS";
