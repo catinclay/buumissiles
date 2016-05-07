@@ -68,20 +68,24 @@ function inputUpListener(touchX, touchY){
 }
 
 function drawFlights() {
-	flights = [];
+	// flights = [];
 	for(var k in localData.users) {
 		if(k!= socketId)
 		{
 			var user = localData.users[k];
-			flights.push(new Flight(user.posX- currentPos.x
+			// flights.push(new Flight(user.posX- currentPos.x
+			// , user.posY- currentPos.y
+			// , flightImage, user.angle, user.hp, user.username));
+			var oflight = new Flight(user.posX- currentPos.x
 			, user.posY- currentPos.y
-			, flightImage, user.angle, user.hp, user.username));
+			, flightImage, user.angle, user.hp, user.username);
+			oflight.drawToContext(context, user.hp);
 		}
 	}
 
-	for(var i = 0; i < flights.length; ++i){
-		flights[i].drawToContext(context, 0);
-	}
+	// for(var i = 0; i < flights.length; ++i){
+	// 	flights[i].drawToContext(context);
+	// }
 	
 }
 
