@@ -48,12 +48,12 @@ io.on('connection', function(socket){
   		}
   	});
 
-  	socket.on('revive_request', function(msg)) {
+  	socket.on('revive_request', function(msg) {
   		data.users[msg.socketId].hp = 100;
   		data.users[msg.socketId].isAlive = true;
-  		data.users.posX = Math.random()*groundWidth;
-  		data.users.posY = Math.random()*groundHeight;
-  	}
+  		data.users[msg.socketId].posX = Math.random()*groundWidth;
+  		data.users[msg.socketId].posY = Math.random()*groundHeight;
+  	});
 });
 
 function calculate(){
