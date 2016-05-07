@@ -59,7 +59,7 @@ function init(){
 	myFlight = new Flight(0, 0, myFlightImage, 0, 100.0, "");
 
 	socket.on('flight_collision', function(data){
-		socket.emit('flight_turn',{socketId: data.socketId, angle: data.turnToAngle});
+		myFlight.setDegree(data.turnToAngle);
 	});
 	
 }

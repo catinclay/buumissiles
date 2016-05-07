@@ -98,6 +98,10 @@ Flight.prototype.getDegree = function() {
 	return this.angle;
 }
 
+Flight.prototype.setDegree = function(angle) {
+	this.angle = angle;
+}
+
 Flight.prototype.printSomething = function() {
 	console.log(this.targetDegree - this.angle);
 }
