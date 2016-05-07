@@ -3,15 +3,18 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var data = {};
+data.usersCount = 0;
 data.users = {};
 data.missiles = [];
-var missilesCountDown = 10000;
+var missileProduceRate = 3000;
+var missilesCountDown = 0;
 app.use('/shapes', express.static('shapes'));
 var flightSpeed = 5;
 var missileSpeed = 7;
 var missileRotateRate = 0.06;
-var missileCount = 20;
 var missileRadius = 200;
+var groundWidth = 600;
+var groundHeight = 600;
 setInterval(onTimerTick, 1000/30);
 io.on('connection', function(socket){
 	var socketId = socket.id;
@@ -20,11 +23,13 @@ io.on('connection', function(socket){
 		console.log("new user: "+socketId);
 	    io.sockets.connected[socketId].emit('getSocketId', socketId);
 	    console.log(socketId);
-	    data.users[socketId] = {posX:300, posY:207, angle:0};
+	    data.users[socketId] = {posX:groundWidth/2, posY:groundHeight/2, angle:0};
+	    data.usersCount++;
 	}
 
 	socket.on('disconnect', function(){
 		console.log("DC: " +socketId);
+		data.usersCount--;
 		delete data.users[socketId];
 	});
 
@@ -49,8 +54,8 @@ function calculate(){
 		if(user.posX != undefined && user.posY != undefined){
 			user.posX -= flightSpeed * Math.cos(user.angle+Math.PI/2);
 			user.posY += flightSpeed * Math.sin(user.angle+Math.PI/2);
-			user.posX = Math.max(0, Math.min(600, user.posX));
-			user.posY = Math.max(0, Math.min(414, user.posY));
+			user.posX = Math.max(0, Math.min(groundWidth, user.posX));
+			user.posY = Math.max(0, Math.min(groundHeight, user.posY));
 		}
 	}
 
@@ -82,6 +87,19 @@ function calculate(){
 					minDistance = dis;
 					nk = k;
 				}
+			}
+		}
+
+		for(var j = i+1; j < data.missiles.length; ++j) {
+			var dx = missile.posX - data.missiles[j].posX;
+			var dy = missile.posY - data.missiles[j].posY;
+			var dis = dx*dx+dy*dy;
+			if(dis < missileRadius){
+				missile.speed = 0;
+				missile.isExploding = true;
+				data.missiles[j].speed = 0;
+				data.missiles[j].isExploding = true;
+				break loopEachMissile;
 			}
 		}
 
@@ -131,14 +149,13 @@ function rotateTo(fx, fy, tx, ty, cd, rr){
 
 function onTimerTick(){
 	// console.log(data);
-	if(missileCount >= 0){
+	if(data.missiles.length < data.usersCount*3){
 		missilesCountDown -= 1000/30;
 		if(missilesCountDown < 0){
-			missilesCountDown = 5000;
+			missilesCountDown = missileProduceRate;
 			data.missiles.push({posX : -100, posY : -100
 								, angle : 0, speed : missileSpeed
 								, isExploding : false, explodingTimer : 500});
-			missileCount--;
 		}
 		// console.log(data);
 	}

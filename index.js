@@ -18,6 +18,8 @@ var currentPos = {};
 var myFlight;
 var flights = [];
 var missiles = [];
+var groundWidth = 600;
+var groundHeight = 600;
 
 function init(){
 	var username = prompt("What's your name?", "Guest");
@@ -126,10 +128,12 @@ function drawScreen() {
 	context.fillStyle = "#FFFFFF";
 	context.fillRect(-theCanvasWidth/2,-theCanvasHeight/2
 					,theCanvasWidth,theCanvasHeight);
-	context.drawImage(backgroundImage
-							, -currentPos.x, -currentPos.y
-							, backgroundImage.width
-							, backgroundImage.height);
+	context.strokeStyle="#000099";
+	context.strokeRect(-currentPos.x,-currentPos.y,groundWidth,groundHeight);
+	// context.drawImage(backgroundImage
+	// 						, -currentPos.x, -currentPos.y
+	// 						, backgroundImage.width
+	// 						, backgroundImage.height);
 	// for(var i = 0; i < SSPS.length; ++i){
 	// 	SSPS[i].drawToContext(context);
 	// }
