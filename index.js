@@ -28,7 +28,7 @@ function init(){
 		return;
 	}
 	theCanvas.style.display = "block";
-	myFlight = new Flight(0, 0, myFlightImage, 0, 0, "");
+	myFlight = new Flight(0, 0, myFlightImage, 0, 100, "");
 	// mySSP = new SimpleSquareParticle(squareX, squareY);
 	socket.on('getSocketId', function(data){
 		socketId = data;
