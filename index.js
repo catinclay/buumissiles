@@ -44,7 +44,7 @@ function init(){
 		// console.log(data);
 		if(localData.users[socketId] != undefined ){
 			currentPos = {x: localData.users[socketId].posX, y: localData.users[socketId].posY};
-			currenthp =localData.users[socketId].hp;
+			currenthp = localData.users[socketId].hp;
 		}
 	});
 	timer = setInterval(onTimerTick, 1000/30);
@@ -75,7 +75,7 @@ function drawFlights() {
 			var user = localData.users[k];
 			flights.push(new Flight(user.posX- currentPos.x
 			, user.posY- currentPos.y
-			, flightImage, user.angle, 0, user.username));
+			, flightImage, user.angle, user.hp, user.username));
 		}
 	}
 
