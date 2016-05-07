@@ -19,6 +19,8 @@ var medalRatio = 20; // how many score for 1 medal
 var groundWidth = 600;
 var groundHeight = 600;
 setInterval(onTimerTick, 1000/30);
+var missileDamage = 20;
+var medalHealth = 5;
 io.on('connection', function(socket){
 	var socketId = socket.id;
 	console.log("new user: "+socketId);
@@ -27,7 +29,7 @@ io.on('connection', function(socket){
 	    io.sockets.connected[socketId].emit('getSocketId', socketId);
 	    console.log(socketId);
 	    data.users[socketId] = {posX:groundWidth/2, posY:groundHeight/2
-	    					, angle:0, hp : 100, isAlive : true, score : 200};
+	    					, angle:0, hp : 100, isAlive : true, score : 0};
 	    data.usersCount++;
 	}
 
@@ -74,7 +76,7 @@ function calculate(){
 			var dy = medal.posY - user.posY;
 			var dis = dx*dx+dy*dy;
 			if(dis < medalRadius){
-				user.hp = Math.min(user.hp+10, 100);
+				user.hp = Math.min(user.hp+medalHealth, 100);
 				user.score += 10;
 				eatenMedals.push(i);
 			}
@@ -119,7 +121,7 @@ function calculate(){
 				if(dis < missileRadius){
 					missile.speed = 0;
 					missile.isExploding = true;
-					user.hp -= 20;
+					user.hp -= missileDamage;
 					if(user.hp <= 0){
 						user.isAlive = false;
 						data.medals.push({posX : user.posX, posY : user.posY});
