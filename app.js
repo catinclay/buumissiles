@@ -11,6 +11,7 @@ var missileProduceRate = 1500;
 var missilesCountDown = 0;
 app.use('/shapes', express.static('shapes'));
 var flightSpeed = 5;
+var flightRadius = 600;
 var missileSpeed = 7;
 var missileRotateRate = 0.06;
 var missileRadius = 200;
@@ -61,6 +62,7 @@ io.on('connection', function(socket){
   		data.users[msg.socketId].posX = Math.random()*groundWidth;
   		data.users[msg.socketId].posY = Math.random()*groundHeight;
   	});
+
 });
 
 function calculate(){
@@ -86,7 +88,6 @@ function calculate(){
 	for(var i = eatenMedals.length - 1; i >= 0; --i) {
 		data.medals.splice(eatenMedals[i], 1);
 	}
-
 	for(var k in data.users){
 		var user = data.users[k];
 		if(!user.isAlive){ continue; }
@@ -96,8 +97,23 @@ function calculate(){
 			user.posX = Math.max(0, Math.min(groundWidth, user.posX));
 			user.posY = Math.max(0, Math.min(groundHeight, user.posY));
 		}
-	}
+		// user collision 
+		for( var j in data.users){
+			var user2 = data.users[j];
+			if(!user2.isAlive || j==k){ continue; }
+			var dx = user.posX - user2.posX;
+			var dy = user.posY - user2.posY;
+			var dis = dx*dx + dy*dy;
+			if (dis < flightRadius) {
+				//define ollision action => combine?
+				io.sockets.emit('flight_collision', 
+					{socketId : k, turnToAngle : Math.random()*2* Math.PI});
+				io.sockets.emit('flight_collision', 
+					{socketId : j, turnToAngle : Math.random()*2* Math.PI});
+			}
+		}
 
+	}
 	var destoyIndices = [];
 	loopEachMissile:
 	for(var i = 0; i < data.missiles.length; ++i){

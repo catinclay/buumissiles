@@ -57,6 +57,10 @@ function init(){
 	});
 	timer = setInterval(onTimerTick, 1000/30);
 	myFlight = new Flight(0, 0, myFlightImage, 0, 100.0, "");
+
+	socket.on('flight_collision', function(data){
+		socket.emit('flight_turn',{socketId: data.socketId, angle: data.turnToAngle});
+	});
 	
 }
 
@@ -162,7 +166,6 @@ function drawFlight() {
 	// myFlight.y = currentPos.y;
 	myFlight.drawToContext(context, currenthp, currentScore);
 }
-
 
 function drawScreen() {
 	context.fillStyle = "#FFFFFF";
