@@ -27,7 +27,7 @@ io.on('connection', function(socket){
 	    io.sockets.connected[socketId].emit('getSocketId', socketId);
 	    console.log(socketId);
 	    data.users[socketId] = {posX:groundWidth/2, posY:groundHeight/2
-	    					, angle:0, hp : 100, isAlive : true, score : 0};
+	    					, angle:0, hp : 100, isAlive : true, score : 200};
 	    data.usersCount++;
 	}
 
@@ -125,8 +125,8 @@ function calculate(){
 						data.medals.push({posX : user.posX, posY : user.posY});
 						for(var j = 0; j < data.users[k].score / medalRatio; ++j){
 							data.medals.push({
-								posX : Math.max(0, Math.min(groundWidth, user.posX+ Math.random()*20-10))
-								, posY : Math.max(0, Math.min(groundHeight, user.posY+ Math.random()*20-10))});
+								posX : Math.max(0, Math.min(groundWidth, user.posX+ Math.random()*50-25))
+								, posY : Math.max(0, Math.min(groundHeight, user.posY+ Math.random()*50-25))});
 						}
 					}
 					break loopEachMissile;
