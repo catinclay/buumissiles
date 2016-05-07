@@ -23,7 +23,8 @@ io.on('connection', function(socket){
 		console.log("new user: "+socketId);
 	    io.sockets.connected[socketId].emit('getSocketId', socketId);
 	    console.log(socketId);
-	    data.users[socketId] = {posX:groundWidth/2, posY:groundHeight/2, angle:0};
+	    data.users[socketId] = {posX:groundWidth/2, posY:groundHeight/2
+	    					, angle:0, hp : 100};
 	    data.usersCount++;
 	}
 
@@ -72,6 +73,7 @@ function calculate(){
 			}
 			continue; 
 		}
+		// missile bump user
 		for(var k in data.users){
 			var user = data.users[k];
 			if(user.posX != undefined && user.posY != undefined){
@@ -81,6 +83,7 @@ function calculate(){
 				if(dis < missileRadius){
 					missile.speed = 0;
 					missile.isExploding = true;
+					data.users[k].hp -= 20;
 					break loopEachMissile;
 				}
 				if(minDistance == undefined || dis < minDistance){
@@ -89,7 +92,7 @@ function calculate(){
 				}
 			}
 		}
-
+		// missile bump missile
 		for(var j = i+1; j < data.missiles.length; ++j) {
 			var dx = missile.posX - data.missiles[j].posX;
 			var dy = missile.posY - data.missiles[j].posY;
@@ -102,7 +105,7 @@ function calculate(){
 				break loopEachMissile;
 			}
 		}
-
+		// missile trace user
 		if(data.users[nk] != undefined){
 			missile.angle = rotateTo(missile.posX, missile.posY
 									, data.users[nk].posX, data.users[nk].posY

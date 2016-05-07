@@ -20,6 +20,7 @@ var flights = [];
 var missiles = [];
 var groundWidth = 600;
 var groundHeight = 600;
+var currenthp = 0;
 
 function init(){
 	var username = prompt("What's your name?", "Guest");
@@ -43,6 +44,7 @@ function init(){
 		// console.log(data);
 		if(localData.users[socketId] != undefined ){
 			currentPos = {x: localData.users[socketId].posX, y: localData.users[socketId].posY};
+			currenthp =localData.users[socketId].hp;
 		}
 	});
 	timer = setInterval(onTimerTick, 1000/30);
@@ -119,7 +121,7 @@ function drawFlight() {
 	myFlight.rotateToward(mousePos.x, mousePos.y);
 	// myFlight.x = currentPos.x;
 	// myFlight.y = currentPos.y;
-	myFlight.drawToContext(context, 0);
+	myFlight.drawToContext(context, currenthp);
 }
 
 
