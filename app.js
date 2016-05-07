@@ -15,6 +15,7 @@ var missileSpeed = 7;
 var missileRotateRate = 0.06;
 var missileRadius = 200;
 var medalRadius = 600;
+var medalRatio = 20; // how many score for 1 medal
 var groundWidth = 600;
 var groundHeight = 600;
 setInterval(onTimerTick, 1000/30);
@@ -118,10 +119,15 @@ function calculate(){
 				if(dis < missileRadius){
 					missile.speed = 0;
 					missile.isExploding = true;
-					data.users[k].hp -= 20;
-					if(data.users[k].hp <= 0){
-						data.users[k].isAlive = false;
+					user.hp -= 20;
+					if(user.hp <= 0){
+						user.isAlive = false;
 						data.medals.push({posX : user.posX, posY : user.posY});
+						for(var j = 0; j < data.users[k].score / medalRatio; ++j){
+							data.medals.push({
+								posX : Math.max(0, Math.min(groundWidth, user.posX+ Math.random()*20-10))
+								, posY : Math.max(0, Math.min(groundHeight, user.posY+ Math.random()*20-10))});
+						}
 					}
 					break loopEachMissile;
 				}
