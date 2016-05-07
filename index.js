@@ -10,7 +10,7 @@ var missileImage = new Image();
 var missileSignImage = new Image();
 var medalIcon = new Image();
 
-var socket = io();
+var socket;
 var socketId;
 var localData = {};
 var SSPS = [];
@@ -24,6 +24,8 @@ var groundWidth = 600;
 var groundHeight = 600;
 var currenthp = 0;
 var currentScore = 0;
+var sortCountDefaut = 5;
+var sortCount = 0;
 
 function init(){
 	
@@ -31,6 +33,7 @@ function init(){
 	if(username == undefined){
 		return;
 	}
+	socket = io();
 	theCanvas.style.display = "block";
 	// mySSP = new SimpleSquareParticle(squareX, squareY);
 	socket.on('getSocketId', function(data){
@@ -167,16 +170,31 @@ function drawScreen() {
 					,theCanvasWidth,theCanvasHeight);
 	context.strokeStyle="#000099";
 	context.strokeRect(-currentPos.x,-currentPos.y,groundWidth,groundHeight);
-	// context.drawImage(backgroundImage
-	// 						, -currentPos.x, -currentPos.y
-	// 						, backgroundImage.width
-	// 						, backgroundImage.height);
-	// for(var i = 0; i < SSPS.length; ++i){
-	// 	SSPS[i].drawToContext(context);
-	// }
 }
 
+function drawLeaderboard() {
+	if(sortCount <=0){
+		var leaderData = [];
+		for(var k in localData.users){
+			leaderData.push({name: localData.users[k].username, score: localData.users[k].score});
+		}
+		leaderData.sort(function(a,b){
+			return b.score - a.score;
+		});
+		var offset = theCanvasHeight/20;
+		for(var i = 0; i < 5 && i < leaderData.length; ++i){
+			context.font = "15px Comic Sans MS";
+			context.fillStyle = "red";
+			context.textAlign = "right";
+			context.fillText(i+1+" : "+leaderData[i].name + " " + leaderData[i].score
+				, theCanvasWidth/2-theCanvasHeight/20 , offset-theCanvasHeight/2);
+			offset+= theCanvasHeight/10;
+		}
 
+	}else {
+		--sortCount;
+	}
+}
 
 
 function onTimerTick(){
@@ -185,6 +203,7 @@ function onTimerTick(){
 	drawMissiles();
 	drawMedals();
 	drawFlight();
+	drawLeaderboard();
 	socket.emit('flight_turn',{socketId: socketId, angle: myFlight.getDegree()});
 }
 

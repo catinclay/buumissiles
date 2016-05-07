@@ -21,6 +21,7 @@ var groundHeight = 600;
 setInterval(onTimerTick, 1000/30);
 var missileDamage = 20;
 var medalHealth = 5;
+var explodingDuration = 750;
 io.on('connection', function(socket){
 	var socketId = socket.id;
 	console.log("new user: "+socketId);
@@ -228,7 +229,7 @@ function generateMissile(){
 			}
 			data.missiles.push({posX : gx, posY : gy
 								, angle : Math.random()*2*Math.PI, speed : missileSpeed
-								, isExploding : false, explodingTimer : 500});
+								, isExploding : false, explodingTimer : explodingDuration});
 		}
 		// console.log(data);
 	}
