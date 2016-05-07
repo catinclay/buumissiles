@@ -137,6 +137,7 @@ function calculate(){
 								posX : Math.max(0, Math.min(groundWidth, user.posX+ Math.random()*50-25))
 								, posY : Math.max(0, Math.min(groundHeight, user.posY+ Math.random()*50-25))});
 						}
+						user.score = 0;
 					}
 					break loopEachMissile;
 				}

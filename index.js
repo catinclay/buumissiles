@@ -188,7 +188,7 @@ function drawLeaderboard() {
 			context.textAlign = "right";
 			context.fillText(i+1+" : "+leaderData[i].name + " " + leaderData[i].score
 				, theCanvasWidth/2-theCanvasHeight/20 , offset-theCanvasHeight/2);
-			offset+= theCanvasHeight/10;
+			offset+= theCanvasHeight/20;
 		}
 
 	}else {
