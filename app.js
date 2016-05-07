@@ -162,18 +162,41 @@ function rotateTo(fx, fy, tx, ty, cd, rr){
 	return cd;
 }
 
-function onTimerTick(){
-	// console.log(data);
+function generateMissile(){
 	if(data.missiles.length < data.usersCount*3){
 		missilesCountDown -= 1000/30;
 		if(missilesCountDown < 0){
 			missilesCountDown = missileProduceRate;
-			data.missiles.push({posX : -100, posY : -100
-								, angle : 0, speed : missileSpeed
+			var offset = groundWidth/6;
+			var gx;
+			var gy;
+			if(Math.random() > 0.5){
+				gx = Math.random()*groundWidth;
+				gy = -offset;
+				if(Math.random() > 0.5){
+					gy *= -1;
+					gy += groundHeight;
+				}
+			}else{
+				gy = Math.random()*groundHeight;
+				gx = -offset;
+				if(Math.random() > 0.5){
+					gx *= -1;
+					gx += groundWidth;
+				}
+			}
+			data.missiles.push({posX : gx, posY : gy
+								, angle : Math.random()*2*Math.PI, speed : missileSpeed
 								, isExploding : false, explodingTimer : 500});
 		}
 		// console.log(data);
 	}
+}
+
+function onTimerTick(){
+	// console.log(data);
+
+	generateMissile();
 	calculate();
 	var jsonS = JSON.stringify(data);
 	// console.log(jsonS);
