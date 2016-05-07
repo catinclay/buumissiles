@@ -7,7 +7,7 @@ data.usersCount = 0;
 data.users = {};
 data.missiles = [];
 data.medals = [];
-var missileProduceRate = 2500;
+var missileProduceRate = 1500;
 var missilesCountDown = 0;
 app.use('/shapes', express.static('shapes'));
 var flightSpeed = 5;
