@@ -55,6 +55,10 @@ function init(){
 function inputDownListener(touchX, touchY){
 	// socket.emit('pos',{socketId: socketId, x:touchX, y:touchY});
 	console.log(localData);
+
+	if(currenthp <= 0){
+		socket.emit('revive_request',{socketId: socketId});
+	}
 }
 
 function inputMoveListener(touchX, touchY){

@@ -47,6 +47,13 @@ io.on('connection', function(socket){
   			data.users[msg.socketId].angle = msg.angle;
   		}
   	});
+
+  	socket.on('revive_request', function(msg)) {
+  		data.users[msg.socketId].hp = 100;
+  		data.users[msg.socketId].isAlive = true;
+  		data.users.posX = Math.random()*groundWidth;
+  		data.users.posY = Math.random()*groundHeight;
+  	}
 });
 
 function calculate(){
