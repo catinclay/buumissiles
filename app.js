@@ -101,17 +101,17 @@ function calculate(){
 		for( var j in data.users){
 			var user2 = data.users[j];
 			if(!user2.isAlive || j==k){ continue; }
-			var dx = user.posX - user2.posX;
-			var dy = user.posY - user2.posY;
+			var dx = user2.posX - user.posX;
+			var dy = user2.posY - user.posY;
 			var dis = dx*dx + dy*dy;
 			if (dis < flightRadius) {
 				//define ollision action => combine?
-				var angle1 = Math.atan2(-dx, dy);
-				var angle2 = Math.atan2(dx, -dy);
+				var angle1 = Math.atan2(-dx, -dy);
+				// var angle2 = Math.atan2(dx, -dy);
 				io.sockets.emit('flight_collision', 
 					{socketId : k, turnToAngle : angle1});
-				io.sockets.emit('flight_collision', 
-					{socketId : j, turnToAngle : angle2});
+				// io.sockets.emit('flight_collision', 
+				// 	{socketId : j, turnToAngle : angle2});
 
 
 			}
