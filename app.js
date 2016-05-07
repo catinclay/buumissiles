@@ -24,7 +24,7 @@ io.on('connection', function(socket){
 	    io.sockets.connected[socketId].emit('getSocketId', socketId);
 	    console.log(socketId);
 	    data.users[socketId] = {posX:groundWidth/2, posY:groundHeight/2
-	    					, angle:0, hp : 100};
+	    					, angle:0, hp : 100, isAlive : true};
 	    data.usersCount++;
 	}
 
@@ -52,6 +52,7 @@ io.on('connection', function(socket){
 function calculate(){
 	for(var k in data.users){
 		var user = data.users[k];
+		if(!user.isAlive){ continue; }
 		if(user.posX != undefined && user.posY != undefined){
 			user.posX -= flightSpeed * Math.cos(user.angle+Math.PI/2);
 			user.posY += flightSpeed * Math.sin(user.angle+Math.PI/2);
@@ -76,6 +77,7 @@ function calculate(){
 		// missile bump user
 		for(var k in data.users){
 			var user = data.users[k];
+			if(!user.isAlive){ continue; }
 			if(user.posX != undefined && user.posY != undefined){
 				var dx = missile.posX - user.posX;
 				var dy = missile.posY - user.posY;
@@ -84,6 +86,9 @@ function calculate(){
 					missile.speed = 0;
 					missile.isExploding = true;
 					data.users[k].hp -= 20;
+					if(data.users[k].hp <= 0){
+						data.users[k].isAlive = false;
+					}
 					break loopEachMissile;
 				}
 				if(minDistance == undefined || dis < minDistance){
@@ -106,7 +111,7 @@ function calculate(){
 			}
 		}
 		// missile trace user
-		if(data.users[nk] != undefined){
+		if(data.users[nk] != undefined && data.users[nk].isAlive){
 			missile.angle = rotateTo(missile.posX, missile.posY
 									, data.users[nk].posX, data.users[nk].posY
 									, missile.angle, missileRotateRate);

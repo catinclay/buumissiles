@@ -21,7 +21,7 @@ function Flight(posX, posY, image, angle, hp, username) {
 Flight.prototype.drawToContext = function(theContext, hp) {
 	this.hp = hp;
 	//theContext.rotate(this.angle*Math.PI/180);
-	// if(hp > 0){
+	if(hp > 0){
 
 	    theContext.save();
 
@@ -50,7 +50,7 @@ Flight.prototype.drawToContext = function(theContext, hp) {
 		context.fillStyle = "red";
 		context.textAlign = "center";
 		context.fillText(this.username, this.x , this.y-this.image.width*0.75);
-    // }
+    }
 
 }
 
