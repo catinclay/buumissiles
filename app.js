@@ -106,8 +106,8 @@ function calculate(){
 			var dis = dx*dx + dy*dy;
 			if (dis < flightRadius) {
 				//define ollision action => combine?
-				var angle1 = Math.atan2(dx, dy);
-				var angle2 = Math.atan2(-dx, -dy);
+				var angle1 = Math.atan2(-dx, dy);
+				var angle2 = Math.atan2(dx, -dy);
 				io.sockets.emit('flight_collision', 
 					{socketId : k, turnToAngle : angle1});
 				io.sockets.emit('flight_collision', 
