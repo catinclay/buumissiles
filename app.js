@@ -7,7 +7,7 @@ data.usersCount = 0;
 data.users = {};
 data.missiles = [];
 data.medals = [];
-var missileProduceRate = 3000;
+var missileProduceRate = 2500;
 var missilesCountDown = 0;
 app.use('/shapes', express.static('shapes'));
 var flightSpeed = 5;
@@ -103,6 +103,12 @@ function calculate(){
 		var minDistance;
 		var nk;
 		var missile = data.missiles[i];
+		if(missile.posX < -groundWidth || missile.posX> groundWidth*2 ||
+			missile.posY < -groundHeight || missile.posY > groundHeight*2){
+			missile.speed = 0;
+			missile.isExploding = true;
+		}
+
 		if(missile.isExploding){ 
 			missile.explodingTimer -= 1000/30;
 			if(missile.explodingTimer <= 0){

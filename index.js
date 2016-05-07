@@ -26,12 +26,12 @@ var currenthp = 0;
 var currentScore = 0;
 
 function init(){
+	
 	var username = prompt("What's your name?", "Guest");
 	if(username == undefined){
 		return;
 	}
 	theCanvas.style.display = "block";
-	myFlight = new Flight(0, 0, myFlightImage, 0, 100, "");
 	// mySSP = new SimpleSquareParticle(squareX, squareY);
 	socket.on('getSocketId', function(data){
 		socketId = data;
@@ -53,6 +53,7 @@ function init(){
 		}
 	});
 	timer = setInterval(onTimerTick, 1000/30);
+	myFlight = new Flight(0, 0, myFlightImage, 0, 100.0, "");
 	
 }
 
@@ -153,6 +154,7 @@ function drawMedals() {
 function drawFlight() {
 	// console.log(mousePos);
 	myFlight.rotateToward(mousePos.x, mousePos.y);
+	myFlight = new Flight(0, 0, myFlightImage, myFlight.getDegree(), currenthp, "",currentScore);
 	// myFlight.x = currentPos.x;
 	// myFlight.y = currentPos.y;
 	myFlight.drawToContext(context, currenthp, currentScore);

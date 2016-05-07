@@ -24,7 +24,7 @@ Flight.prototype.drawToContext = function(theContext, hp, score) {
 	this.score = score;
 	//theContext.rotate(this.angle*Math.PI/180);
 	if(this.hp > 0){
-
+		// console.log(this.hp);
 	    theContext.save();
 
 	    // move to the center of the canvas
@@ -40,23 +40,25 @@ Flight.prototype.drawToContext = function(theContext, hp, score) {
 							, -this.image.height/2);
 
 	    // we’re done with the rotating so restore the unrotated context
-	    theContext.restore();
+	    
+		theContext.restore();
 
+		theContext.strokeStyle = "rgba(" + Math.floor(255*(80-this.hp)/100) + "," + Math.floor(255*((this.hp-20)/100)) + ",0,0.8)";
 	    theContext.beginPath();
-	    theContext.strokeStyle = "rgba(" + Math.floor(255*(80-this.hp)/100) + "," + Math.floor(255*((this.hp-20)/100)) + ",0,0.8)";
 	    theContext.lineWidth = 3;
 	    theContext.arc(this.x,this.y,this.radius,1.5 * Math.PI, (1.5 - 2 * this.hp/100) * Math.PI, true);
 	    theContext.stroke();
 
-	    context.font = "15px Comic Sans MS";
-		context.fillStyle = "red";
-		context.textAlign = "center";
-		context.fillText(this.username, this.x , this.y-this.image.width*0.75);
+		
+	    theContext.font = "15px Comic Sans MS";
+		theContext.fillStyle = "red";
+		theContext.textAlign = "center";
+		theContext.fillText(this.username, this.x , this.y-this.image.width*0.75);
 
-		context.font = "10px Comic Sans MS";
-		context.fillStyle = "red";
-		context.textAlign = "center";
-		context.fillText(this.score, this.x , this.y+this.image.width);
+		theContext.font = "10px Comic Sans MS";
+		theContext.fillStyle = "red";
+		theContext.textAlign = "center";
+		theContext.fillText(this.score, this.x , this.y+this.image.width);
     }
 
 }
