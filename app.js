@@ -10,7 +10,7 @@ data.medals = [];
 var defaultWinnerCounter = 300;
 data.winCondition = 150;
 data.winnerCounter = 300;
-data.winner = "AAAA";
+data.winner = "NO ONE";
 var missileProduceRate = 1500;
 var missilesCountDown = 0;
 app.use('/shapes', express.static('shapes'));
