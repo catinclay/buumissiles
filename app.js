@@ -7,6 +7,10 @@ data.usersCount = 0;
 data.users = {};
 data.missiles = [];
 data.medals = [];
+var defaultWinnerCounter = 300;
+data.winCondition = 50;
+data.winnerCounter = 300;
+data.winner = "AAAA";
 var missileProduceRate = 1500;
 var missilesCountDown = 0;
 app.use('/shapes', express.static('shapes'));
@@ -66,7 +70,35 @@ io.on('connection', function(socket){
 
 });
 
+function restartGame() {
+	data.medals = [];
+	for (var sid in data.users) {
+		data.users[sid].hp = 100;
+  		data.users[sid].isAlive = true;
+  		data.users[sid].score = 0;
+  		data.users[sid].posX = Math.random()*groundWidth;
+  		data.users[sid].posY = Math.random()*groundHeight;
+	}
+	data.winner = "";
+}
+
 function calculate(){
+
+	for (var sid in data.users) {
+		if (data.users[sid].score >= data.winCondition && data.winnerCounter == 0) {
+			data.winnerCounter = defaultWinnerCounter;
+			data.winner = data.users[sid].username;
+		}
+	}
+
+	if (data.winnerCounter > 0) {
+		data.winnerCounter--;
+		if (data.winnerCounter == 0){
+			restartGame();
+		}
+		return;
+	}
+
 	if(data.medals.length < 1) {
 		data.medals.push({posX : Math.random()*groundWidth, posY : Math.random()*groundHeight});
 	}

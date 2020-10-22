@@ -172,7 +172,7 @@ function drawScreen() {
 	context.fillStyle = "#FFFFFF";
 	context.fillRect(-theCanvasWidth/2,-theCanvasHeight/2
 					,theCanvasWidth,theCanvasHeight);
-	context.strokeStyle="#000099";
+	context.strokeStyle="#888888";
 	context.strokeRect(-currentPos.x,-currentPos.y,groundWidth,groundHeight);
 }
 
@@ -190,13 +190,26 @@ function drawLeaderboard() {
 			context.font = "15px Comic Sans MS";
 			context.fillStyle = "red";
 			context.textAlign = "right";
-			context.fillText(i+1+" : "+leaderData[i].name + " " + leaderData[i].score
+			context.fillText(leaderData[i].name + " : " + leaderData[i].score
 				, theCanvasWidth/2-theCanvasHeight/20 , offset-theCanvasHeight/2);
 			offset+= theCanvasHeight/20;
 		}
-
+		context.fillText(localData.winCondition + " to win!"
+				, theCanvasWidth/2-theCanvasHeight/20 , offset-theCanvasHeight/2);
 	}else {
 		--sortCount;
+	}
+
+	if (localData.winnerCounter > 0) {
+		context.font = "15px Comic Sans MS";
+		context.fillStyle = "blue";
+		context.textAlign = "center";
+		context.fillText( "Winner is", 0, -theCanvasHeight/15);
+		context.font = "30px Comic Sans MS";
+		context.fillText(localData.winner, 0, 0);
+		context.font = "15px Comic Sans MS";
+		context.fillText("Congratulations!!", 0, theCanvasHeight/15);
+		context.fillText(localData.winnerCounter + " to restart...", 0, 2 * theCanvasHeight/15);
 	}
 }
 
@@ -206,7 +219,9 @@ function onTimerTick(){
 	drawFlights();
 	drawMissiles();
 	drawMedals();
-	drawFlight();
+	if (localData.winnerCounter == 0) {
+		drawFlight();
+	}
 	drawLeaderboard();
 	socket.emit('flight_turn',{socketId: socketId, angle: myFlight.getDegree()});
 }
